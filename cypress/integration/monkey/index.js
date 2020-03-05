@@ -2,18 +2,20 @@
 require('cypress-plugin-tab');
 var faker = require('faker');
 
-const url = Cypress.config('baseUrl') || "https://www.uniandes.edu.co/";
+
+//TODO: Read these properties from a json file
+const url = Cypress.config('baseUrl') || "https://uniandes.edu.co/";
 const appName = Cypress.config('hostName')|| "your app";
 const events = Cypress.config('numEvents')|| 100;
 const delay = Cypress.config('eventDelay') || 100;
-/*
-const pct_clicks = Cypress.config('pctClicks');
-const pct_keys = Cypress.config('pctKeys');
-const pct_clicks = Cypress.config('pct');
-const pct_keys = Cypress.config('pctKeys');
-const pct_clicks = Cypress.config('pctClicks');
-const pct_keys = Cypress.config('pctKeys');
-*/
+
+const pct_clicks = Cypress.config('pctClicks') || 17;
+const pct_scrolls = Cypress.config('pctKeys') || 16;
+const pct_selectors = Cypress.config('pct') || 16;
+const pct_keys = Cypress.config('pctKeys') || 16;
+const pct_spkeys = Cypress.config('pctClicks') || 16;
+const pct_pgnav = Cypress.config('pctKeys') || 16; 
+
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -29,6 +31,7 @@ function getRandomInt(min, max) {
 var curX = 0;
 var curY = 0;
 var focused = false;
+var pending_events = [,,,,,];  //TODO: Calculate the pending events of each type according to the total number of events and the percentage of each type of event
 
 function randClick(){
     let viewportHeight = Cypress.config("viewportHeight");
@@ -193,8 +196,8 @@ function randHover(){
                 }
             }
         }
+        focused = !!win.document.activeElement; 
     })
-    focused = !!win.document.activeElement;
 }
 
 function avPag(){
@@ -270,7 +273,11 @@ function changeViewport(){
 }
 
 function navBack(){
-    cy.go(-1)
+    cy.url().then((path)=>{
+        if(url!==path){
+            cy.go(-1)
+        }
+    });
 }
 
 function navForward(){
@@ -286,9 +293,11 @@ function tab(){
 }
 
 function randomEvent(){
+    //TODO: Include all functions
+    //TODO: Differentiate different types of functions and document them
+    //TODO: Choose the function if there are pending events of the corresponding types
     const functions = [randClick, randDClick, randRClick, avPag, rePag, horizontalScrollBk, horizontalScrollFw, reload, enter, spkeypress, changeViewport, typeCharKey, randHover, tab];//navBack, navForward];
     let fIndex = getRandomInt(0, functions.length-1);
-    console.log(functions[fIndex].name);
     functions[fIndex]();
     cy.wait(delay);
 }
@@ -298,9 +307,10 @@ describe( `${appName} under monkeys`, function() {
     it(`visits ${appName} and survives monkeys`, function() {
         cy.visit(url);
         cy.wait(1000);
+        //TODO: Change the conditions to control the iteration
         for(let i = 0; i< events; i++){
-            //randomEvent();
-            randClick();
+            randomEvent();
+            //randClick();
             cy.wait(delay);
         }
     })
@@ -322,7 +332,6 @@ function clickRandAnchor(){
         if(!Cypress.dom.isHidden(randomLink)) {
             cy.wrap(randomLink).click({force: true});
         }
-        cy.wait(1000);
     });
 }
 
@@ -332,25 +341,47 @@ function clickRandButton(){
         if(!Cypress.dom.isHidden(randomLink)) {
             cy.wrap(randomLink).click({force: true});
         }
-        cy.wait(1000);
     });
 }
 
 function fillInput(){ //Or fill form
-    /*
-    cy.get("body").then($body => {
-        if ($body.find("input[data-cy=appDrawerOpener]").length > 0) {   //evaluates as true
-            cy.get("button[data-cy=appDrawerOpener]").then($input=>{
-                if($input.type){
-
-                }
-            });
+    //TODO: Validate function
+    cy.get("input").then($inputs => {
+        window.document.getElementById().attr
+        var inp = $inputs.get(getRandomInt(0, $inputs.length));
+        if(!Cypress.dom.isHidden(inp)) {
+            if(inp.getAttribute("type") == "email"){
+                cy.wrap(inp).type(faker.internet.email);
+            }
+            else if(inp.getAttribute("type") == "button" || inp.getAttribute("type") == "submit" || inp.getAttribute("type") == "radio" || inp.getAttribute("type") == "checkbox"){
+                cy.wrap(inp).click();
+            }
+            else if(inp.getAttribute("type") == "date"){
+                cy.wrap(inp).type(faker.date);
+            }
+            else if(inp.getAttribute("type") == "tel"){
+                cy.wrap(inp).type(faker.phone);
+            }
+            else if(inp.getAttribute("type") == "url"){
+                cy.wrap(inp).type(faker.internet.url);
+            }
+            else if(inp.getAttribute("type") == "number"){
+                cy.wrap(inp).type(faker.random.number);
+            }
+            else if(inp.getAttribute("type") == "text" || inp.getAttribute("type") == "password"){
+                cy.wrap(inp).type(faker.random.alphaNumeric);
+            }
         }
     });
-    */
 }
 function clearInput(){
-
+    cy.get("input").then($inputs => {
+        window.document.getElementById().attr
+        var inp = $inputs.get(getRandomInt(0, $inputs.length));
+        if(!Cypress.dom.isHidden(inp)) {
+            cy.wrap(inp).clear();
+        }
+    });
 }
 function clearLocalStorage(){
     cy.clearLocalStorage();
@@ -360,19 +391,24 @@ function clearCookies(){
 }
 
 
-function randomSEvent(events){
-    if(events>0){
-        randomSEvent(events-1);
-    }
+function randomSEvent(){
+    const functions = []; 
+    let fIndex = getRandomInt(0, functions.length-1);
+    functions[fIndex]();
+    cy.wait(delay);
 }
 
-const smartFunctions = [];
-
+//TODO: Include all functions
+//TODO: Define percentages for each type of function
+//TODO: Control the iterations with other criteria that include the pending events
 describe( `${appName} under smarter monkeys`, function() {
     it(`visits ${appName} and survives smarter monkeys`, function() {
         cy.visit(url);
         cy.wait(1000);
-        randomSEvent(events);
+        for(let i = 0; i< events; i++){
+            randomSEvent();
+            cy.wait(delay);
+        }
     })
 })
 
