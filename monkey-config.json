@@ -1,0 +1,17 @@
+{
+    "projectId":"TSDL-Monkey-with-cypress",
+    "baseUrl":"https://uniandes.edu.co/",
+    "env":{
+        "appName":"App prueba",
+        "events":50,
+        "delay":300,
+        "pctClicks":19,
+        "pctScroll":17,
+        "pctSelectors":16,
+        "pctKeys":16,
+        "pctSpKeys":16,
+        "pctPgNav":16
+    },
+    "integrationFolder": "./cypress/integration/monkey",
+    "testFiles": "monkey.js"
+}

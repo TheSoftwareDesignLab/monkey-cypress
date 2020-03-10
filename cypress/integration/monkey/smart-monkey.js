@@ -2,19 +2,19 @@
 require('cypress-plugin-tab');
 var faker = require('faker');
 
-
-//TODO: Read these properties from a json file
 const url = Cypress.config('baseUrl') || "https://uniandes.edu.co/";
-const appName = Cypress.config('hostName')|| "your app";
-const events = Cypress.config('numEvents')|| 100;
-const delay = Cypress.config('eventDelay') || 100;
+const appName = Cypress.env('appName')|| "your app";
+const events = Cypress.env('events')|| 100;
+const delay = Cypress.env('delay') || 100;
 
-const pct_clicks = Cypress.config('pctClicks') || 17;
-const pct_scrolls = Cypress.config('pctKeys') || 16;
-const pct_selectors = Cypress.config('pct') || 16;
-const pct_keys = Cypress.config('pctKeys') || 16;
-const pct_spkeys = Cypress.config('pctClicks') || 16;
-const pct_pgnav = Cypress.config('pctKeys') || 16; 
+const pct_clicks = Cypress.env('pctClicks') || 12;
+const pct_scrolls = Cypress.env('pctScroll') || 12;
+const pct_selectors = Cypress.env('pctSelectors') || 12;
+const pct_keys = Cypress.env('pctKeys') || 12;
+const pct_spkeys = Cypress.env('pctSpKeys') || 12;
+const pct_pgnav = Cypress.env('pctPgNav') || 12; 
+const pct_browserChaos = Cypress.env('pctBwChaos') || 12;
+const pct_actions = Cypress.env('pctActions') || 16;
 
 
 function getRandomInt(min, max) {
@@ -23,15 +23,13 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 };
 
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//cur of random monkey
+//Start of smart monkey
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 var curX = 0;
 var curY = 0;
 var focused = false;
-var pending_events = [,,,,,];  //TODO: Calculate the pending events of each type according to the total number of events and the percentage of each type of event
 
 function randClick(){
     let viewportHeight = Cypress.config("viewportHeight");
@@ -40,9 +38,7 @@ function randClick(){
     let randY = getRandomInt(curY, viewportHeight);
     
     cy.window().then((win)=>{
-        console.log(win.document)
         let element = win.document.elementFromPoint(randX, randY);
-        console.log(element)
         if(!!element){
             //Use cypress selector if any fits
             if(!!element.id){ //boolean that indicates if the element has a non-empty id
@@ -56,7 +52,6 @@ function randClick(){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).click({force:true});
-                            i = $candidates.length; // Break out of iteration
                         }
                     }
                 });
@@ -68,16 +63,17 @@ function randClick(){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).click({force:true});
-                            i = $candidates.length; // Break out of iteration
                         }
                     }
                 });
+
             }
         }
         else{
             cy.get('body').click(randX, randY, {force:true});
         }
         focused = !!win.document.activeElement;
+        
     })
 }
 
@@ -104,7 +100,6 @@ function randDClick(){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).dblclick({force:true});
-                            i = $candidates.length; // Break out of iteration
                         }
                     }
                 });
@@ -116,7 +111,6 @@ function randDClick(){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).dblclick({force:true});
-                            i = $candidates.length; // Break out of iteration
                         }
                     }
                 });
@@ -152,7 +146,6 @@ function randRClick(){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).rightclick({force:true});
-                            i = $candidates.length; // Break out of iteration
                         }
                     }
                 });
@@ -164,7 +157,6 @@ function randRClick(){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).rightclick({force:true});
-                            i = $candidates.length; // Break out of iteration
                         }
                     }
                 });
@@ -192,11 +184,19 @@ function randHover(){
                     cy.get(`#${element.id}`).trigger('mouseover');
                 }
                 else if(!!element.className){ //boolean that indicates if the element has a non-empty className
-                    cy.get(`.${element.className}`).trigger('mouseover');
+                    cy.get(`.${element.className}`).then($candidates => {
+                        //rightclick the first visible candidate
+                        for(let i = 0; i < $candidates.length; i++){
+                            let candidate = $candidates.get(i);
+                            if(!Cypress.dom.isHidden(candidate)){
+                                cy.wrap(candidate).trigger('mouseover');
+                            }
+                        }
+                    })
                 }
             }
         }
-        focused = !!win.document.activeElement; 
+        focused = !!win.document.activeElement;
     })
 }
 
@@ -230,7 +230,6 @@ function reload(){
 }
 
 function enter(){
-    
    if(focused){
        cy.focused().type("{enter}");
    }
@@ -292,39 +291,7 @@ function tab(){
     focused = true
 }
 
-function randomEvent(){
-    //TODO: Include all functions
-    //TODO: Differentiate different types of functions and document them
-    //TODO: Choose the function if there are pending events of the corresponding types
-    const functions = [randClick, randDClick, randRClick, avPag, rePag, horizontalScrollBk, horizontalScrollFw, reload, enter, spkeypress, changeViewport, typeCharKey, randHover, tab];//navBack, navForward];
-    let fIndex = getRandomInt(0, functions.length-1);
-    functions[fIndex]();
-    cy.wait(delay);
-}
 
-
-describe( `${appName} under monkeys`, function() {
-    it(`visits ${appName} and survives monkeys`, function() {
-        cy.visit(url);
-        cy.wait(1000);
-        //TODO: Change the conditions to control the iteration
-        for(let i = 0; i< events; i++){
-            randomEvent();
-            //randClick();
-            cy.wait(delay);
-        }
-    })
-})
-
-
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//End of random monkey
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//cur of smart monkey
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function clickRandAnchor(){
     cy.get('a').then($links => {
@@ -347,9 +314,9 @@ function clickRandButton(){
 function fillInput(){ //Or fill form
     //TODO: Validate function
     cy.get("input").then($inputs => {
-        window.document.getElementById().attr
         var inp = $inputs.get(getRandomInt(0, $inputs.length));
         if(!Cypress.dom.isHidden(inp)) {
+            focused = true;
             if(inp.getAttribute("type") == "email"){
                 cy.wrap(inp).type(faker.internet.email);
             }
@@ -371,15 +338,16 @@ function fillInput(){ //Or fill form
             else if(inp.getAttribute("type") == "text" || inp.getAttribute("type") == "password"){
                 cy.wrap(inp).type(faker.random.alphaNumeric);
             }
+            else focused = false;
         }
     });
 }
 function clearInput(){
     cy.get("input").then($inputs => {
-        window.document.getElementById().attr
         var inp = $inputs.get(getRandomInt(0, $inputs.length));
         if(!Cypress.dom.isHidden(inp)) {
             cy.wrap(inp).clear();
+            focused = true;
         }
     });
 }
@@ -390,24 +358,53 @@ function clearCookies(){
     cy.clearCookies();
 }
 
-
-function randomSEvent(){
-    const functions = []; 
-    let fIndex = getRandomInt(0, functions.length-1);
-    functions[fIndex]();
-    cy.wait(delay);
+function randomEvent(){
+    let typeIndex = getRandomInt(0, pending_events.length);
+    if(pending_events[typeIndex] > 0){
+        let fIndex = getRandomInt(0, functions[typeIndex].length-1);
+        functions[typeIndex][fIndex]();
+        pending_events[typeIndex] --;
+        cy.wait(delay);
+    }
+    else{
+        functions.splice(typeIndex, 1);
+        pending_events.splice(typeIndex, 1);
+    }
 }
 
-//TODO: Include all functions
-//TODO: Define percentages for each type of function
-//TODO: Control the iterations with other criteria that include the pending events
+var pending_events = [,,,,,,,]; 
+
+//Aggregate in a matrix-like constant
+const functions = [
+    [randClick, randDClick, randRClick], 
+    [horizontalScrollBk, horizontalScrollFw, avPag, rePag], 
+    [randHover, tab], 
+    [typeCharKey], 
+    [spkeypress, enter], 
+    [reload, navBack, navForward],
+    [changeViewport, clearCookies, clearLocalStorage],
+    [fillInput, clearInput, clickRandAnchor, clickRandButton]
+];
+
 describe( `${appName} under smarter monkeys`, function() {
     it(`visits ${appName} and survives smarter monkeys`, function() {
-        cy.visit(url);
-        cy.wait(1000);
-        for(let i = 0; i< events; i++){
-            randomSEvent();
-            cy.wait(delay);
+        if(pct_clicks+pct_scrolls+pct_keys+pct_pgnav+pct_selectors+pct_spkeys+pct_actions+pct_browserChaos === 100){
+            
+            pending_events[0] = events*pct_clicks/100;
+            pending_events[1] = events*pct_scrolls/100;
+            pending_events[2] = events*pct_selectors/100;
+            pending_events[3] = events*pct_keys/100;
+            pending_events[4] = events*pct_spkeys/100;
+            pending_events[5] = events*pct_pgnav/100;
+            pending_events[6] = events*pct_browserChaos/100;
+            pending_events[7] = events*pct_actions/100;
+            
+            cy.visit(url);
+            cy.wait(1000);
+            //Add an event for each type of event in order to enter the else statement of randomEvent method
+            for(let i = 0; i < events + 7; i++){
+                randomEvent();
+            }
         }
     })
 })

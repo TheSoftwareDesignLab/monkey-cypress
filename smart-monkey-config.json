@@ -1,0 +1,19 @@
+{
+    "projectId":"TSDL-Smart-Monkey-with-cypress",
+    "baseUrl":"https://uniandes.edu.co/",
+    "env":{
+        "appName":"App prueba",
+        "events":50,
+        "delay":300,
+        "pctClicks":12,
+        "pctScroll":12,
+        "pctSelectors":12,
+        "pctKeys":12,
+        "pctSpKeys":12,
+        "pctPgNav":12,
+        "pctBwChaos":12,
+        "pctActions":16
+    },
+    "integrationFolder": "./cypress/integration/monkey",
+    "testFiles": "smart-monkey.js"
+}
