@@ -1,5 +1,6 @@
 //Imports
 require('cypress-plugin-tab');
+var fs = require('fs');
 
 const url = Cypress.env('baseUrl') || "https://uniandes.edu.co/";
 const appName = Cypress.env('appName')|| "your app";
@@ -19,6 +20,24 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
 };
+
+function fullPath(el){
+    var names = [];
+    while (el.parentNode){
+      if (el.id){
+        names.unshift('#'+el.id);
+        break;
+      }else{
+        if (el==el.ownerDocument.documentElement) names.unshift(el.tagName);
+        else{
+          for (var c=1,e=el;e.previousElementSibling;e=e.previousElementSibling,c++);
+          names.unshift(el.tagName+":nth-child("+c+")");
+        }
+        el=el.parentNode;
+      }
+    }
+    return names.join(" > ");
+  }
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -42,36 +61,37 @@ function randClick(){
             if(!!element.id){ //boolean that indicates if the element has a non-empty id
                 cy.get(`#${element.id}`).click();
             }
+            /*
             else if(!!element.className){ //boolean that indicates if the element has a non-empty className
-                let className = element.className.split(" ")[0];
+                let className = element.tagName.splice(0,1)+'.'+element.className.replace(/\s/g, ".");
                 cy.get(`.${className}`).then($candidates => {
                     //click the first visible candidate
                     for(let i = 0; i < $candidates.length; i++){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).click({force:true});
+                            break;
                         }
                     }
                 });
-            }
+            }*/
             else{
-                cy.get(element.tagName).then($candidates => {
+                cy.get(fullPath(element)).then($candidates => {
                     //click the first visible candidate
                     for(let i = 0; i < $candidates.length; i++){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
-                            cy.wrap(candidate).click({force:true});
+                            cy.wrap(candidate).rightclick({force:true});
+                            break;
                         }
                     }
                 });
-
             }
         }
         else{
             cy.get('body').click(randX, randY, {force:true});
         }
         focused = !!win.document.activeElement;
-        
     })
 }
 
@@ -90,25 +110,28 @@ function randDClick(){
             if(!!element.id){ //boolean that indicates if the element has a non-empty id
                 cy.get(`#${element.id}`).dblclick();
             }
+            /*
             else if(!!element.className){ //boolean that indicates if the element has a non-empty className
-                let className = element.className.split(" ")[0];
+                let className = element.tagName.splice(0,1)+'.'+element.className.replace(/\s/g, ".");
                 cy.get(`.${className}`).then($candidates => {
                     //dblclick the first visible candidate
                     for(let i = 0; i < $candidates.length; i++){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).dblclick({force:true});
+                            break;
                         }
                     }
                 });
-            }
+            }*/
             else{
-                cy.get(element.tagName).then($candidates => {
+                cy.get(fullPath(element)).then($candidates => {
                     //dblclick the first visible candidate
                     for(let i = 0; i < $candidates.length; i++){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
-                            cy.wrap(candidate).dblclick({force:true});
+                            cy.wrap(candidate).rightclick({force:true});
+                            break;
                         }
                     }
                 });
@@ -136,25 +159,27 @@ function randRClick(){
             if(!!element.id){ //boolean that indicates if the element has a non-empty id
                 cy.get(`#${element.id}`).rightclick();
             }
-            else if(!!element.className){ //boolean that indicates if the element has a non-empty className
-                let className = element.className.split(" ")[0];
+            /*else if(!!element.className){ //boolean that indicates if the element has a non-empty className
+                let className = element.tagName.splice(0,1)+'.'+element.className.replace(/\s/g, ".");
                 cy.get(`.${className}`).then($candidates => {
                     //rightclick the first visible candidate
                     for(let i = 0; i < $candidates.length; i++){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).rightclick({force:true});
+                            break;
                         }
                     }
                 });
-            }
+            }*/
             else{
-                cy.get(element.tagName).then($candidates => {
+                cy.get(fullPath(element)).then($candidates => {
                     //rightclick the first visible candidate
                     for(let i = 0; i < $candidates.length; i++){
                         let candidate = $candidates.get(i);
                         if(!Cypress.dom.isHidden(candidate)){
                             cy.wrap(candidate).rightclick({force:true});
+                            break;
                         }
                     }
                 });
@@ -181,16 +206,29 @@ function randHover(){
                 if(!!element.id){ //boolean that indicates if the element has a non-empty id
                     cy.get(`#${element.id}`).trigger('mouseover');
                 }
-                else if(!!element.className){ //boolean that indicates if the element has a non-empty className
+                /*else if(!!element.className){ //boolean that indicates if the element has a non-empty className
                     cy.get(`.${element.className}`).then($candidates => {
                         //rightclick the first visible candidate
                         for(let i = 0; i < $candidates.length; i++){
                             let candidate = $candidates.get(i);
                             if(!Cypress.dom.isHidden(candidate)){
                                 cy.wrap(candidate).trigger('mouseover');
+                                break;
                             }
                         }
                     })
+                }*/
+                else{
+                    cy.get(fullPath(element)).then($candidates => {
+                        //hover the first visible candidate
+                        for(let i = 0; i < $candidates.length; i++){
+                            let candidate = $candidates.get(i);
+                            if(!Cypress.dom.isHidden(candidate)){
+                                cy.wrap(candidate).trigger('mouseover');
+                                break;
+                            }
+                        }
+                    });
                 }
             }
         }
@@ -248,7 +286,7 @@ function typeCharKey(){
 }
 
 function spkeypress(){
-    const specialKeys = ["{{}","{backspace}", "{del}","{downarrow}", "{end}", "{enter}", "{esc}","{home}",  "{leftarrow}", "{pagedown}", "{pageup}", "{rightarrow}", "{selectall}", "{uparrow}"];
+    const specialKeys = ["{{}","{backspace}", "{del}","{downarrow}", "{end}", "{esc}","{home}",  "{leftarrow}", "{pagedown}", "{pageup}", "{rightarrow}", "{selectall}", "{uparrow}"];
     const modifiers = ["{alt}", "{ctrl}", "{meta}", "{shift}", ""];
     let modIndex = getRandomInt(0, modifiers.length-1);
     let spkIndex = getRandomInt(0, specialKeys.length-1);
@@ -289,6 +327,15 @@ function tab(){
     focused = true
 }
 
+function getEvtType(i){
+    if(i===0) return "Random click"
+    else if (i===1) return "Scroll event"
+    else if (i===2) return "Selector focus"
+    else if (i===3) return "Keypress"
+    else if (i===4) return "Special Keypress"
+    else if (i===5) return "Page Navigation"
+}
+
 //Aggregate in a matrix-like constant
 const functions = [
     [randClick, randDClick, randRClick], 
@@ -299,13 +346,18 @@ const functions = [
     [reload, navBack, navForward, changeViewport]
 ];
 
+var screenshotIndex = 0;
+
 function randomEvent(){
     let typeIndex = getRandomInt(0, pending_events.length);
     if(pending_events[typeIndex] > 0){
+        screenshotIndex +=1;
+        //cy.screenshot('smart/'+screenshotIndex+"-"+ getEvtType(typeIndex)+"-before")
         let fIndex = getRandomInt(0, functions[typeIndex].length-1);
         functions[typeIndex][fIndex]();
         pending_events[typeIndex] --;
         cy.wait(delay);
+        //cy.screenshot('smart/'+screenshotIndex+"-"+ getEvtType(typeIndex)+"-after")
     }
     else{
         functions.splice(typeIndex, 1);
@@ -336,7 +388,6 @@ describe( `${appName} under monkeys`, function() {
         }
     })
 })
-
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
