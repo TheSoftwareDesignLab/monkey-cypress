@@ -1,11 +1,11 @@
-//Imports
+//Import
 require('cypress-plugin-tab');
-var fs = require('fs');
 
-const url = Cypress.env('baseUrl') || "https://uniandes.edu.co/";
+const url = Cypress.config('baseUrl') || "https://uniandes.edu.co/";
 const appName = Cypress.env('appName')|| "your app";
 const events = Cypress.env('events')|| 100;
 const delay = Cypress.env('delay') || 100;
+const seed = Cypress.env('seed') || 12; 
 
 const pct_clicks = Cypress.env('pctClicks') || 19;
 const pct_scrolls = Cypress.env('pctScroll') || 17;
@@ -14,12 +14,29 @@ const pct_keys = Cypress.env('pctKeys') || 16;
 const pct_spkeys = Cypress.env('pctSpKeys') || 16;
 const pct_pgnav = Cypress.env('pctPgNav') || 16; 
 
+/*
+ Bob Jenkins Small Fast, aka smallprng pseudo random number generator is the chosen selection for introducing seeding in the tester
+ Credits of the implementation to bryc's answer in this stackoverflow post: https://stackoverflow.com/a/47593316 
+*/
+function jsf32(a, b, c, d) {
+    return function() {
+        a |= 0; b |= 0; c |= 0; d |= 0;
+        var t = a - (b << 27 | b >>> 5) | 0;
+        a = b ^ (c << 17 | c >>> 15);
+        b = c + d | 0;
+        c = d + t | 0;
+        d = a + t | 0;
+        return (d >>> 0) / 4294967296;
+    }
+}
+
+var random = jsf32(0xF1AE533D, seed, seed, seed);
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
-};
+    return Math.floor(random() * (max - min)) + min;
+}
 
 function fullPath(el){
     var names = [];
