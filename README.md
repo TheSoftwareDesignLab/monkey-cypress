@@ -30,4 +30,4 @@ Typical navigation that an user could perform, go to the last page or to the nex
 - **Browser Chaotic Events**:
 Events that change the browser configuration such as changing the viewport, clearing local storage or clearing the cookies.
 - **Selector Click Events**:
-Clicks performed to a specific type of element considering the HTML tags that typically induce an interaction such as <a>, <button>, <input type="submit">; also, events of filling and clearing an input element.
+Clicks performed to a specific type of element considering the HTML tags that typically induce an interaction such as `<a>`, `<button>`, `<input type="submit">`; also, events of filling and clearing an input element.
