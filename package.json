@@ -8,18 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jespitiaa/monkey-cypress.git"
+    "url": "git+https://github.com/TheSoftwareDesignLab/monkey-cypress"
   },
   "author": "jespitiaa",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jespitiaa/monkey-cypress/issues"
+    "url": "https://github.com/TheSoftwareDesignLab/monkey-cypress/issues"
   },
-  "homepage": "https://github.com/jespitiaa/monkey-cypress#readme",
+  "homepage": "https://github.com/TheSoftwareDesignLab/monkey-cypress#readme",
   "devDependencies": {
     "cypress-plugin-tab": "^1.0.5"
   },
   "dependencies": {
+    "cypress": "^4.2.0",
     "faker": "^4.1.0"
   }
 }
