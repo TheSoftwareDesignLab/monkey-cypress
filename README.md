@@ -4,8 +4,8 @@ This repository contains the code for a random tester developed using [Cypress](
 ## How to run
 In order to use the tester, you will have to follow these steps:
 - Get the source code from this repository: Click on Download as Zip and unzip the folder in your machine or clone the repo
-- Install the required modules: Using [Node Package Manager](https://www.npmjs.com/), run `npm install cypress` on the root folder; this will install the cypress CLI module. The testers need other dependencies, so change the directory with `cd cypress/integration/monkey` to the corresponding folder and run `npm install`; this will install the faker module and a cypress [plugin](https://github.com/Bkucera/cypress-plugin-tab) for pressing the tab key.
-- Configure the desired parameters: The repository's root folder contains two JSON files which have the configuration parameters for each test. Open them and edit the parameters as needed. You can change the baseURL, the percentage of events, the delay between events, and the number of events.
+- Install the required modules: Using [Node Package Manager](https://www.npmjs.com/), run `npm install` on the root folder; this will install the cypress CLI module and other dependencies, which are the [faker](https://www.npmjs.com/package/faker) module and a cypress [plugin](https://github.com/Bkucera/cypress-plugin-tab) for pressing the tab key. In case you already have cypress installed, it is better to avoid installing it again in this folder; for this, run the commands `npm install faker` and `npm install -D cypress-plugin-tab` individually.
+- Configure the desired parameters: The repository's root folder contains two JSON files which have the configuration parameters for each test. Open them and edit the parameters as needed. You can change the baseURL, the seed for the test, the percentage of events, the delay between events, and the number of events.
 - Run the desired tester: The commands for running the tests must be executed from the root folder, so do not forget to change de directory again with the `cd` command. For the random tester, run `cypress run --config-file ./monkey-config.json`. For the slightly smarter random tester, run `cypress run --config-file ./smart-monkey-config.json`. 
 
 \* Note: The default browser is Electron 78 in headless mode. In order to test another browser, add the `--browser <browser-name-or-path>` option to the run command, indicating which of the [supported browsers](https://docs.cypress.io/guides/guides/launching-browsers.html#Browsers) you want to use
@@ -31,3 +31,6 @@ Typical navigation that an user could perform, go to the last page or to the nex
 Events that change the browser configuration such as changing the viewport, clearing local storage or clearing the cookies.
 - **Selector Click Events**:
 Clicks performed to a specific type of element considering the HTML tags that typically induce an interaction such as `<a>`, `<button>`, `<input type="submit">`; also, events of filling and clearing an input element.
+
+## Results
+When the test finishes running, an HTML report and a video of the execution in a browser will be generated in the results folder.
