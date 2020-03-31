@@ -33,8 +33,12 @@ module.exports = (on, config) => {
       })
       return null
     },
-    logStart(){
-      fs.appendFile(LOG_FILENAME, "<html><body><ol type = '1'>", (err) => {
+    logStart({type, url, seed}){
+      //Date might be inaccurate
+      var currentdate = new Date(Date.now());
+      var date = currentdate.getDay() + "/" + currentdate.getMonth() + "/" + currentdate.getFullYear();
+      var time = currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+      fs.appendFile(LOG_FILENAME, `<html><body><h1>Execution of ${type} in <a href = ${url}>${url}</a></h1><h2>Date of execution: ${date} at ${time}</h2><h2>Seed:${seed}</h2><ol type = '1'>`, (err) => {
         if (err) throw err
         console.log(`Log started`)
       })
@@ -52,6 +56,9 @@ module.exports = (on, config) => {
         if (err) throw err
         console.log(`Logged error`)
       })
+    },
+    genericLog({message}){
+      console.log(message)
     }
   })
 

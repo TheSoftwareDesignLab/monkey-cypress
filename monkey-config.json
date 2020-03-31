@@ -2,7 +2,7 @@
 
 {
     "projectId":"TSDL-Monkey-with-cypress",
-    "baseUrl":"https://uniandes.edu.co/",
+    "baseUrl":"https://caev03.github.io",
     "env":{
         "appName":"App prueba",
         "events":50,

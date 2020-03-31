@@ -7,7 +7,7 @@ const url = Cypress.config('baseUrl') || "https://uniandes.edu.co/";
 const appName = Cypress.env('appName')|| "your app";
 const events = Cypress.env('events')|| 100;
 const delay = Cypress.env('delay') || 100;
-const seed = Cypress.env('seed') || 12;
+var seed = Cypress.env('seed');
 
 const num_categories = 7;
 
@@ -639,9 +639,11 @@ const functions = [
 
 describe( `${appName} under smarter monkeys`, function() {
     it(`visits ${appName} and survives smarter monkeys`, function() {
-        beforeEach(()=>{
-            cy.task('logStart')
-        })
+        if(!seed) seed = getRandomInt(0, Number.MAX_SAFE_INTEGER);
+        
+        cy.task('logStart', {"type":"monkey", "url":url, "seed":seed})
+        cy.log(`Seed: ${seed}`)
+        cy.task('genericLog', {"message":`Seed: ${seed}`})
 
         let pcg = pct_clicks+pct_scrolls+pct_keys+pct_pgnav+pct_selectors+pct_spkeys+pct_actions+pct_browserChaos;
         if(pcg === 100){
