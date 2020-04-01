@@ -446,7 +446,7 @@ function changeViewport(){
         curPageMaxY = Math.max( d.body.scrollHeight, d.body.offsetHeight, d.documentElement.clientHeight, d.documentElement.scrollHeight, d.documentElement.offsetHeight) - win.innerHeight
         curPageMaxX = Math.max( d.body.scrollWidth, d.body.offsetWidth, d.documentElement.clientWidth, d.documentElement.scrollWidth, d.documentElement.offsetWidth) - win.innerWidth
     })
-    cy.task("logCommand", { funtype: "Viewport change", info: `Changed the viewport to ${viewports[index]} with ${orientations[index]} orientation`})
+    cy.task("logCommand", { funtype: "Viewport change", info: `Changed the viewport to ${viewports[index]} with ${orientations[oindex]} orientation`})
 }
 
 function navBack(){
@@ -638,6 +638,20 @@ const functions = [
 ];
 
 describe( `${appName} under smarter monkeys`, function() {
+    //Listeners
+    cy.on('uncaught:exception', (err)=>{
+        cy.task('genericLog', {'message':`An exception occurred: ${err}`})
+        cy.task('genericReport', {'html': `<p><strong>Uncaught exception: </strong>${err}</p>`});
+    });
+    cy.on('window:alert', (text)=>{
+        cy.task('genericLog', {'message':`An alert was fired with the message: "${text}"`})
+        cy.task('genericReport', {'html': `<p><strong>An alert was fired with the message: </strong>${text}</p>`});
+    });
+    cy.on('fail', (err)=>{
+        cy.task('genericLog', {'message':`The test failed with the following error: ${err}`});
+        cy.task('genericReport', {'html': `<p><strong>Test failed with the error: </strong>${err}</p>`});
+        return false;
+    });
     it(`visits ${appName} and survives smarter monkeys`, function() {
         if(!seed) seed = getRandomInt(0, Number.MAX_SAFE_INTEGER);
         

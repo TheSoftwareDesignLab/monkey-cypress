@@ -1,5 +1,3 @@
-
-
 {
     "projectId":"TSDL-Monkey-with-cypress",
     "baseUrl":"https://caev03.github.io",
@@ -17,6 +15,7 @@
     },
     "integrationFolder": "./cypress/integration/monkey",
     "pluginsFile": "./cypress/plugins/index.js",
+    "pageLoadTimeout":120000,
     "testFiles": "monkey.js",
     "videosFolder":"./results"
 }

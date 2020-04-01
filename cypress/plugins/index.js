@@ -56,11 +56,41 @@ module.exports = (on, config) => {
         if (err) throw err
         console.log(`Logged error`)
       })
+      return null
     },
     genericLog({message}){
       console.log(message)
+      return null
+    },
+    genericReport({html}){
+      fs.appendFile(LOG_FILENAME, html, (err) => {
+        if (err) throw err
+        console.log(`Logged error`)
+      })
+      return null
     }
-  })
+  });
 
+  require('cypress-log-to-output').install(on, (type, event) => {
+    // return true or false from this plugin to control if the event is logged
+    // `type` is either `console` or `browser`
+    // if `type` is `browser`, `event` is an object of the type `LogEntry`:
+    //  https://chromedevtools.github.io/devtools-protocol/tot/Log#type-LogEntry
+    // if `type` is `console`, `event` is an object of the type passed to `Runtime.consoleAPICalled`:
+    //  https://chromedevtools.github.io/devtools-protocol/tot/Runtime#event-consoleAPICalled
+    if(type === 'browser'){
+      fs.appendFile(LOG_FILENAME, `<p><strong>Browser event (source: ${event.source}): </strong>${event.text}</p>`, (err) => {
+        if (err) throw err
+        console.log(`Finished logging`)
+      })
+    }
+    else if (type === 'console'){
+      fs.appendFile(LOG_FILENAME, `<p><strong>Console ${event.type} event. Trace: </strong>${(!!event.stackTrace)?event.stackTrace.description:"none"}</p>`, (err) => {
+        if (err) throw err
+        console.log(`Finished logging`)
+      })
+    }
+    return true;
+  });
 }
 

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/TheSoftwareDesignLab/monkey-cypress#readme",
   "devDependencies": {
+    "cypress-log-to-output": "^1.0.8",
     "cypress-plugin-tab": "^1.0.5"
   },
   "dependencies": {

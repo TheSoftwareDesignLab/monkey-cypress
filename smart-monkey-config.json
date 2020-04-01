@@ -17,6 +17,7 @@
     },
     "integrationFolder": "./cypress/integration/monkey",
     "pluginsFile": "./cypress/plugins/index.js",
+    "pageLoadTimeout":120000,
     "testFiles": "smart-monkey.js",
     "videosFolder":"./results"
 }
