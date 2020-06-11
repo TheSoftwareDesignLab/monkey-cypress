@@ -12,7 +12,7 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const LOG_FILENAME = "C:/Users/juan-/Juan/Uniandes/monitoria pruebas/monkey/results/monkey-execution.html"
+const LOG_FILENAME = "./results/monkey-execution.html"
 var fs = require('fs');
 
 /**

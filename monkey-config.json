@@ -1,6 +1,6 @@
 {
     "projectId":"TSDL-Monkey-with-cypress",
-    "baseUrl":"https://caev03.github.io",
+    "baseUrl":"https://consumer.huawei.com/co/",
     "env":{
         "appName":"App prueba",
         "events":50,
@@ -16,6 +16,7 @@
     "integrationFolder": "./cypress/integration/monkey",
     "pluginsFile": "./cypress/plugins/index.js",
     "pageLoadTimeout":120000,
+    "defaultCommandTimeout":120000,
     "testFiles": "monkey.js",
     "videosFolder":"./results"
 }
