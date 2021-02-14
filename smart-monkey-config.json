@@ -1,6 +1,6 @@
 {
     "projectId":"TSDL-Smart-Monkey-with-cypress",
-    "baseUrl":"https://uniandes.edu.co/",
+    "baseUrl":"https://losestudiantes.com/",
     "env":{
         "appName":"App prueba",
         "events":50,

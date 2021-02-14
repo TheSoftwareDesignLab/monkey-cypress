@@ -563,7 +563,7 @@ function fillInput(){ //Or fill form
             else info = `Input ${inp.id} is hidden`
         }
         else info = "INVALID. There are no input elements in the current page"        
-        
+        console.log(info)
         cy.task("logCommand", {funtype: "Action: click anchor", info: info})
     })
 }
@@ -685,9 +685,10 @@ describe( `${appName} under smarter monkeys`, function() {
         }
         else cy.task('logPctNo100')
         
-        afterEach(()=>{
-            cy.task('logEnd')
-        })
+    })
+    
+    afterEach(()=>{
+        cy.task('logEnd')
     })
 })
 

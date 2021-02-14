@@ -553,10 +553,10 @@ describe( `${appName} under monkeys`, function() {
             }
         }
         else cy.task('logPctNo100')
-        
-        afterEach(()=>{
-            cy.task('logEnd')
-        })
+       
+    }) 
+    afterEach(()=>{
+        cy.task('logEnd')
     })
 })
 
