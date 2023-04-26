@@ -84,7 +84,7 @@ function randClick(){
         if(!!element){
             //Use cypress selector if any fits
             if(!!element.id){ //boolean that indicates if the element has a non-empty id
-                cy.get(`#${element.id}`).click()
+                cy.get(`#${element.id}`).click({force: true})
                 info = `${element.tagName} with id: ${element.id}`
             }
             /*
@@ -138,7 +138,7 @@ function randDClick(){
         if(!!element){
             //Use cypress selector if any fits
             if(!!element.id){ //boolean that indicates if the element has a non-empty id
-                cy.get(`#${element.id}`).dblclick()
+                cy.get(`#${element.id}`).dblclick({force: true})
                 info = `${element.tagName} with id: ${element.id}`
             }
             /*
@@ -162,7 +162,7 @@ function randDClick(){
                     for(let i = 0; i < $candidates.length; i++){
                         let candidate = $candidates.get(i)
                         if(!Cypress.dom.isHidden(candidate)){
-                            cy.wrap(candidate).dblclick({force:true})
+                            cy.wrap(candidate).dblclick({force: true})
                             break
                         }
                     }
@@ -171,7 +171,7 @@ function randDClick(){
             }
         }
         else{
-            cy.get('body').dblclick(randX, randY, {force:true})
+            cy.get('body').dblclick(randX, randY, {force: true})
             info = `Position: (${randX}, ${randY}). INVALID, no selectable element`
         }
         cy.task("logCommand", { funtype: "Random double click", info: info})

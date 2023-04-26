@@ -23,7 +23,7 @@
     "cypress-plugin-tab": "^1.0.5"
   },
   "dependencies": {
-    "cypress": "^4.2.0",
+    "cypress": "4.2.0",
     "faker": "^4.1.0"
   }
 }
